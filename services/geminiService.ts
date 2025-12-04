@@ -67,8 +67,9 @@ export const generateMicroTasks = async (category: string, mood: string): Promis
       }
     });
     
-    const jsonText = response.text;
-    if (!jsonText) return [];
+    let jsonText = response.text || "[]";
+    // Strip markdown code blocks if present (prevents runtime crashes)
+    jsonText = jsonText.replace(/^```json\s*/, "").replace(/```$/, "").trim();
     
     return JSON.parse(jsonText);
   } catch (error) {

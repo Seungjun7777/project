@@ -17,13 +17,22 @@ const MicroHabits: React.FC<MicroHabitsProps> = ({ tasks, onToggleTask, onAddTas
   const handleGenerateTasks = async () => {
     setLoading(true);
     const generated = await generateMicroTasks(selectedCategory, userMood);
-    const newTasks: Task[] = generated.map((t, idx) => ({
-      id: Date.now().toString() + idx,
-      text: t.text,
-      completed: false,
-      category: selectedCategory,
-      difficulty: t.difficulty as any
-    }));
+    
+    const newTasks: Task[] = generated.map((t, idx) => {
+      // Validate difficulty type safely
+      const validDifficulty = ['easy', 'medium', 'hard'].includes(t.difficulty) 
+        ? (t.difficulty as 'easy' | 'medium' | 'hard') 
+        : 'easy';
+
+      return {
+        id: Date.now().toString() + idx,
+        text: t.text,
+        completed: false,
+        category: selectedCategory,
+        difficulty: validDifficulty
+      };
+    });
+    
     onAddTasks(newTasks);
     setLoading(false);
   };

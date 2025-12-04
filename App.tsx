@@ -5,6 +5,33 @@ import GrowthGarden from './components/GrowthGarden';
 import MindfulChat from './components/MindfulChat';
 import { LayoutGrid, Sprout, MessageCircle, Menu, X, Leaf } from 'lucide-react';
 
+// Separate component to prevent re-creation on every render
+const NavItem = ({ 
+  view, 
+  currentView,
+  icon, 
+  label, 
+  onClick 
+}: { 
+  view: AppView, 
+  currentView: AppView,
+  icon: React.ReactNode, 
+  label: string, 
+  onClick: () => void 
+}) => (
+  <button
+    onClick={onClick}
+    className={`flex items-center gap-3 w-full p-3 rounded-xl transition-all ${
+      currentView === view 
+        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' 
+        : 'text-slate-500 hover:bg-slate-100'
+    }`}
+  >
+    {icon}
+    <span className="font-medium">{label}</span>
+  </button>
+);
+
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.HABITS);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,22 +83,10 @@ const App: React.FC = () => {
     setCurrentView(AppView.HABITS);
   };
 
-  const NavItem = ({ view, icon, label }: { view: AppView, icon: React.ReactNode, label: string }) => (
-    <button
-      onClick={() => {
-        setCurrentView(view);
-        setMobileMenuOpen(false);
-      }}
-      className={`flex items-center gap-3 w-full p-3 rounded-xl transition-all ${
-        currentView === view 
-          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' 
-          : 'text-slate-500 hover:bg-slate-100'
-      }`}
-    >
-      {icon}
-      <span className="font-medium">{label}</span>
-    </button>
-  );
+  const handleNavClick = (view: AppView) => {
+    setCurrentView(view);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
@@ -83,9 +98,27 @@ const App: React.FC = () => {
         </div>
         
         <nav className="flex-1 space-y-2">
-          <NavItem view={AppView.HABITS} icon={<LayoutGrid size={20} />} label="오늘의 미션" />
-          <NavItem view={AppView.GARDEN} icon={<Sprout size={20} />} label="성장 정원" />
-          <NavItem view={AppView.CHAT} icon={<MessageCircle size={20} />} label="마음 코칭" />
+          <NavItem 
+            view={AppView.HABITS} 
+            currentView={currentView}
+            icon={<LayoutGrid size={20} />} 
+            label="오늘의 미션" 
+            onClick={() => handleNavClick(AppView.HABITS)}
+          />
+          <NavItem 
+            view={AppView.GARDEN} 
+            currentView={currentView}
+            icon={<Sprout size={20} />} 
+            label="성장 정원" 
+            onClick={() => handleNavClick(AppView.GARDEN)}
+          />
+          <NavItem 
+            view={AppView.CHAT} 
+            currentView={currentView}
+            icon={<MessageCircle size={20} />} 
+            label="마음 코칭" 
+            onClick={() => handleNavClick(AppView.CHAT)}
+          />
         </nav>
 
         <div className="mt-auto bg-slate-50 p-4 rounded-xl border border-slate-100">
@@ -115,9 +148,27 @@ const App: React.FC = () => {
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-white z-20 pt-20 px-6 md:hidden">
            <nav className="space-y-4">
-            <NavItem view={AppView.HABITS} icon={<LayoutGrid size={20} />} label="오늘의 미션" />
-            <NavItem view={AppView.GARDEN} icon={<Sprout size={20} />} label="성장 정원" />
-            <NavItem view={AppView.CHAT} icon={<MessageCircle size={20} />} label="마음 코칭" />
+            <NavItem 
+              view={AppView.HABITS} 
+              currentView={currentView}
+              icon={<LayoutGrid size={20} />} 
+              label="오늘의 미션" 
+              onClick={() => handleNavClick(AppView.HABITS)}
+            />
+            <NavItem 
+              view={AppView.GARDEN} 
+              currentView={currentView}
+              icon={<Sprout size={20} />} 
+              label="성장 정원" 
+              onClick={() => handleNavClick(AppView.GARDEN)}
+            />
+            <NavItem 
+              view={AppView.CHAT} 
+              currentView={currentView}
+              icon={<MessageCircle size={20} />} 
+              label="마음 코칭" 
+              onClick={() => handleNavClick(AppView.CHAT)}
+            />
           </nav>
         </div>
       )}
