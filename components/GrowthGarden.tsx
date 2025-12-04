@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserStats } from '../types';
 import { Sprout, Flower, Trees, Sun, Cloud, Trophy } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell } from 'recharts';
 
 interface GrowthGardenProps {
   stats: UserStats;
@@ -36,7 +36,7 @@ const GrowthGarden: React.FC<GrowthGardenProps> = ({ stats }) => {
     <div className="flex flex-col h-full space-y-6">
       <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-3xl p-8 flex flex-col items-center justify-center relative shadow-sm border border-white overflow-hidden min-h-[300px]">
         {/* Background Elements */}
-        <div className="absolute top-4 right-8 text-yellow-400 animate-spin-slow">
+        <div className="absolute top-4 right-8 text-yellow-400 animate-spin">
           <Sun size={48} />
         </div>
         <div className="absolute top-10 left-10 text-blue-200 animate-pulse">

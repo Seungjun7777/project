@@ -1,8 +1,23 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-// Initialize Gemini Client
-// Note: Ensure API_KEY is set in your Vercel project environment variables
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const getAIClient = () => {
+  // In Vercel/Build environments, process.env.API_KEY is replaced by the string value.
+  // We use a safe accessor to prevent ReferenceErrors if process is missing (though polyfilled in index.tsx).
+  let apiKey = '';
+  
+  try {
+    // Check purely for the variable replacement
+    if (process.env.API_KEY) {
+      apiKey = process.env.API_KEY;
+    }
+  } catch (e) {
+    // Fallback: If process.env access fails, we might be in a very strict env.
+    // In most builds, the above line is compiled to "if ('xyz') ..." so it works.
+    console.warn("API Key access warning:", e);
+  }
+  
+  return new GoogleGenAI({ apiKey });
+};
 
 const SYSTEM_INSTRUCTION_COACH = `
 당신은 '리블룸(ReBloom)'이라는 앱의 AI 코치입니다. 
@@ -16,6 +31,7 @@ const SYSTEM_INSTRUCTION_COACH = `
 
 export const getAICoachingResponse = async (message: string, history: {role: 'user' | 'model', text: string}[]): Promise<string> => {
   try {
+    const ai = getAIClient();
     const chat = ai.chats.create({
       model: 'gemini-2.5-flash',
       config: {
@@ -38,6 +54,7 @@ export const getAICoachingResponse = async (message: string, history: {role: 'us
 
 export const generateMicroTasks = async (category: string, mood: string): Promise<Array<{text: string, difficulty: string}>> => {
   try {
+    const ai = getAIClient();
     const prompt = `
     사용자의 현재 기분: ${mood}
     관심 카테고리: ${category}
