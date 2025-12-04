@@ -5,19 +5,20 @@ import GrowthGarden from './components/GrowthGarden';
 import MindfulChat from './components/MindfulChat';
 import { LayoutGrid, Sprout, MessageCircle, Menu, X, Leaf } from 'lucide-react';
 
-// Separate component to prevent re-creation on every render
-const NavItem = ({ 
+interface NavItemProps {
+  view: AppView;
+  currentView: AppView;
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}
+
+const NavItem: React.FC<NavItemProps> = ({ 
   view, 
   currentView,
   icon, 
   label, 
   onClick 
-}: { 
-  view: AppView, 
-  currentView: AppView,
-  icon: React.ReactNode, 
-  label: string, 
-  onClick: () => void 
 }) => (
   <button
     onClick={onClick}

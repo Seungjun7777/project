@@ -19,10 +19,10 @@ const MicroHabits: React.FC<MicroHabitsProps> = ({ tasks, onToggleTask, onAddTas
     const generated = await generateMicroTasks(selectedCategory, userMood);
     
     const newTasks: Task[] = generated.map((t, idx) => {
-      // Validate difficulty type safely
-      const validDifficulty = ['easy', 'medium', 'hard'].includes(t.difficulty) 
-        ? (t.difficulty as 'easy' | 'medium' | 'hard') 
-        : 'easy';
+      // Validate difficulty type safely to prevent runtime errors
+      let validDifficulty: 'easy' | 'medium' | 'hard' = 'easy';
+      if (t.difficulty === 'medium') validDifficulty = 'medium';
+      if (t.difficulty === 'hard') validDifficulty = 'hard';
 
       return {
         id: Date.now().toString() + idx,
@@ -37,7 +37,7 @@ const MicroHabits: React.FC<MicroHabitsProps> = ({ tasks, onToggleTask, onAddTas
     setLoading(false);
   };
 
-  const categories = [
+  const categories: { id: 'study' | 'life' | 'social' | 'health', label: string, icon: React.ReactNode, color: string }[] = [
     { id: 'study', label: '공부/학습', icon: <BookOpen size={18} />, color: 'bg-indigo-100 text-indigo-600' },
     { id: 'life', label: '생활 습관', icon: <Coffee size={18} />, color: 'bg-orange-100 text-orange-600' },
     { id: 'social', label: '사회 연결', icon: <Users size={18} />, color: 'bg-blue-100 text-blue-600' },
@@ -54,7 +54,7 @@ const MicroHabits: React.FC<MicroHabitsProps> = ({ tasks, onToggleTask, onAddTas
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id as any)}
+              onClick={() => setSelectedCategory(cat.id)}
               className={`flex items-center justify-center gap-2 p-3 rounded-xl transition-all ${
                 selectedCategory === cat.id 
                 ? 'bg-slate-800 text-white shadow-md transform scale-105' 

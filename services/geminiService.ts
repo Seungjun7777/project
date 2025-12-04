@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 // Initialize Gemini Client
+// Note: Ensure API_KEY is set in your Vercel project environment variables
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const SYSTEM_INSTRUCTION_COACH = `
@@ -13,7 +14,7 @@ const SYSTEM_INSTRUCTION_COACH = `
 4. 사용자가 공부 의지를 보이면 칭찬하고, 아주 쉬운 5분 공부법 등을 제안하세요.
 `;
 
-export const getAICoachingResponse = async (message: string, history: {role: string, text: string}[]): Promise<string> => {
+export const getAICoachingResponse = async (message: string, history: {role: 'user' | 'model', text: string}[]): Promise<string> => {
   try {
     const chat = ai.chats.create({
       model: 'gemini-2.5-flash',
@@ -69,7 +70,7 @@ export const generateMicroTasks = async (category: string, mood: string): Promis
     
     let jsonText = response.text || "[]";
     // Strip markdown code blocks if present (prevents runtime crashes)
-    jsonText = jsonText.replace(/^```json\s*/, "").replace(/```$/, "").trim();
+    jsonText = jsonText.replace(/^```json\s*/, "").replace(/^```/, "").replace(/```$/, "").trim();
     
     return JSON.parse(jsonText);
   } catch (error) {
